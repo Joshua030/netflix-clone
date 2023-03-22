@@ -1,8 +1,8 @@
 import Head from "next/head";
 import styles from "@/styles/Home.module.css";
-import Banner from "../../components/banner/banner"
+import Banner from "../../components/banner/banner";
 import NavBar from "../../components/nav/navBar";
-
+import Card from "../../components/card/card";
 
 export default function Home() {
   return (
@@ -14,8 +14,15 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {/* <h2>Netflix</h2> */}
-      <NavBar username="Jose"/>
-      <Banner title="clifford the red dog" subTitle='a very cute dog' imgUrl=""/>
+      <NavBar username="Jose" />
+      <Banner
+        title="clifford the red dog"
+        subTitle="a very cute dog"
+        imgUrl=""
+      />
+      <Card imgUrl="" size="large" />
+      <Card imgUrl="" size="medium" />
+      <Card imgUrl="" size="small" />
     </>
   );
 }
