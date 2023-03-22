@@ -1,6 +1,7 @@
 import Head from "next/head";
 import styles from "@/styles/Home.module.css";
 import Banner from "../../components/banner/banner"
+import NavBar from "../../components/nav/navBar";
 
 
 export default function Home() {
@@ -12,7 +13,8 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <h2>Netflix</h2>
+      {/* <h2>Netflix</h2> */}
+      <NavBar username="Jose"/>
       <Banner title="clifford the red dog" subTitle='a very cute dog' imgUrl=""/>
     </>
   );
