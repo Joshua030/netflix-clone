@@ -3,6 +3,7 @@ import styles from "@/styles/Home.module.css";
 import Banner from "../../components/banner/banner";
 import NavBar from "../../components/nav/navBar";
 import Card from "../../components/card/card";
+import SectionCards from "../../components/card/sectionCards";
 
 export default function Home() {
   return (
@@ -18,11 +19,11 @@ export default function Home() {
       <Banner
         title="clifford the red dog"
         subTitle="a very cute dog"
-        imgUrl=""
+        imgUrl="/static/intestellar.jpg"
       />
-      <Card imgUrl="" size="large" />
-      <Card imgUrl="" size="medium" />
-      <Card imgUrl="" size="small" />
+      <div className={styles.sectionWrapper}>
+        <SectionCards title="Disney" videos={[]} size="medium"/>
+      </div>
     </>
   );
 }
