@@ -4,8 +4,10 @@ import Banner from "../../components/banner/banner";
 import NavBar from "../../components/nav/navBar";
 import Card from "../../components/card/card";
 import SectionCards from "../../components/card/sectionCards";
+import { getVideos } from "../../lib/videos";
 
 export default function Home() {
+  const disneyVideos= getVideos();
   return (
     <>
       <Head>
@@ -22,7 +24,7 @@ export default function Home() {
         imgUrl="/static/intestellar.jpg"
       />
       <div className={styles.sectionWrapper}>
-        <SectionCards title="Disney" videos={[]} size="medium"/>
+        <SectionCards title="Disney" videos={disneyVideos} size="medium"/>
       </div>
     </>
   );
