@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 interface props {
   imgUrl: string;
   size: string;
-  id: number;
+  id: string;
 }
 
 const Card = ({
@@ -43,7 +43,7 @@ const Card = ({
     | {
         scale: number;
         scaleY?: undefined;
-      } = id === 0 ? { scaleY: 1.1 } : { scale: 1.1 };
+      } = id === "0" ? { scaleY: 1.1 } : { scale: 1.1 };
 
   return (
     <div className={styles.container}>

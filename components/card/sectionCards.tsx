@@ -1,11 +1,7 @@
+// import { Video } from "../../Types";
 import Card from "./card";
 import styles from "./sectionCards.module.css"
 
-interface Video {
-  title: string;
-  imgUrl: string;
-  id: number;
-}
 
 interface props {
   title: string;
@@ -13,7 +9,7 @@ interface props {
   size:string;
 }
 
-const SectionCards = ({title,videos,size}:props) => {
+const SectionCards = ({title,videos=[],size}:props) => {
   return (
     <section className={styles.container}>
       <h2 className={styles.title}>{title}</h2>

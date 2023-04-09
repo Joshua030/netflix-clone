@@ -6,8 +6,19 @@ import Card from "../../components/card/card";
 import SectionCards from "../../components/card/sectionCards";
 import { getVideos } from "../../lib/videos";
 
-export default function Home() {
+
+export async function getServerSideProps () {
   const disneyVideos= getVideos();
+  return {props:{disneyVideos}}
+}
+
+
+interface props {
+  disneyVideos:Video[]
+}
+
+export default function Home({disneyVideos}:props) {
+  
   return (
     <>
       <Head>
