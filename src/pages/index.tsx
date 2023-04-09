@@ -8,16 +8,23 @@ import { getVideos } from "../../lib/videos";
 
 
 export async function getServerSideProps () {
-  const disneyVideos= getVideos();
-  return {props:{disneyVideos}}
+  const disneyVideos = await getVideos("disney trailer");
+  const productivityVideos = await getVideos("Productivity");
+
+  const travelVideos = await getVideos("indie music");
+  return {
+    props: { disneyVideos, travelVideos, productivityVideos }, // will be passed to the page component as props
+  };
 }
 
 
 interface props {
-  disneyVideos:Video[]
+  disneyVideos:Video[],
+  travelVideos:Video[], 
+  productivityVideos:Video[]
 }
 
-export default function Home({disneyVideos}:props) {
+export default function Home({disneyVideos,travelVideos,productivityVideos}:props) {
   
   return (
     <>
@@ -35,7 +42,10 @@ export default function Home({disneyVideos}:props) {
         imgUrl="/static/intestellar.jpg"
       />
       <div className={styles.sectionWrapper}>
-        <SectionCards title="Disney" videos={disneyVideos} size="medium"/>
+        <SectionCards title="Disney" videos={disneyVideos} size="large"/>
+        <SectionCards title="Travel" videos={travelVideos} size="small"/>
+        <SectionCards title="Productivity" videos={productivityVideos} size="medium"/>
+        <SectionCards title="Popular" videos={disneyVideos} size="small"/>
       </div>
     </>
   );
