@@ -31,7 +31,7 @@ const NavBar = ({ username }: props) => {
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>
-      <a href="/" className={styles.logoLink}>
+      <Link href="/" className={styles.logoLink}>
         <div className={styles.logoWrapper}>
         <Image
               src="/static/netflix.svg"
@@ -40,7 +40,7 @@ const NavBar = ({ username }: props) => {
               height={34}
             />
         </div>
-      </a>
+      </Link>
       <ul className={styles.navItems}>
         <li className={styles.navItem} onClick={handleOnClickHome}>Home</li>
         <li className={styles.navItem2} onClick={handleOnClickMyList}>My List</li>
