@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import styles from "../styles/Login.module.css";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { magic } from "../../lib/magic-client";
 import { Magic } from "magic-sdk";
@@ -12,6 +12,20 @@ const Login = () => {
 
   const [userMsg, setUserMsg] = useState("");
   const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    const handleComplete = () => {
+      setIsLoading(false);
+    };
+    router.events.on("routeChangeComplete", handleComplete);
+    router.events.on("routeChangeError", handleComplete);
+
+    return () => {
+      router.events.off("routeChangeComplete", handleComplete);
+      router.events.off("routeChangeError", handleComplete);
+    };
+  }, [router]);
 
   const handleOnChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     const {
@@ -31,20 +45,25 @@ const Login = () => {
         // router.push("/")
         try {
           if (magic instanceof Magic) {
+            setIsLoading(true)
            const didToken = await magic.auth.loginWithMagicLink({
               email,
             });
-            console.log({didToken});
+            // console.log({didToken});
+            if(didToken){ 
+              // setIsLoading(false)
+              router.push('/');}
             
           } else {
             console.log("magic setup failed");
           }
         } catch (err) {
           console.error("Something went wrong logging in",err);
-          
+          setIsLoading(false)
         }
       } else {
         //show user message
+        setIsLoading(false)
         setUserMsg("Something went wrong logging In");
       }
     } else {
@@ -83,7 +102,7 @@ const Login = () => {
           />
           <p className={styles.userMsg}>{userMsg}</p>
           <button onClick={handleLoginWithEmail} className={styles.loginBtn}>
-            Sign In
+            {isLoading ? 'Loading...':'Sign In'}
           </button>
         </div>
       </main>
