@@ -58,7 +58,7 @@ const NavBar = ({ username }: props) => {
           </button>
           {showDropdown && (<div className={styles.navDropdown}>
             <div>
-            <Link href="" className={styles.linkName}>Sign Out</Link>
+            <Link href="/login" className={styles.linkName}>Sign Out</Link>
             <div className={styles.lineWrapper}></div>
 
             </div>
