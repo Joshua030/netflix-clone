@@ -15,8 +15,8 @@ const createMagic = (): Magic | false => {
 
 export const magic: Magic | false = createMagic();
 
-if (magic instanceof Magic) {
-  console.log("magic setup", magic.auth);
-} else {
-  console.log("magic setup failed");
-}
+// if (magic instanceof Magic) {
+//   console.log("magic setup", magic.auth);
+// } else {
+//   console.log("magic setup failed");
+// }

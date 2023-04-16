@@ -41,7 +41,7 @@ export default function Home({disneyVideos,travelVideos,productivityVideos,popul
       </Head>
       {/* <h2>Netflix</h2> */}
       <div className={styles.main}>
-      <NavBar username="Jose" />
+      <NavBar />
       <Banner
         title="clifford the red dog"
         subTitle="a very cute dog"

@@ -101,6 +101,7 @@
   line-height: 1.25rem /* 20px */;
   border-radius: 0.25rem /* 4px */;
   cursor: pointer;
+  color: #fff;
 }
 
 .linkName:hover {

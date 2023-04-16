@@ -1,17 +1,36 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import styles from "./navBar.module.css";
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import Image from "next/image";
-interface props {
-  username: string;
-}
+import { magic } from "../../lib/magic-client";
+import { Magic } from "magic-sdk";
 
-const NavBar = ({ username }: props) => {
+
+const NavBar = () => {
 
   const router = useRouter();
 
   const [showDropdown, setShowDropdown] = useState(false);
+  const [userName, setUserName] = useState("")
+
+  useEffect(() => {
+    async function getUsername() {
+      try {
+        if (magic instanceof Magic){
+          const { email } = await magic.user.getMetadata();
+          if (email) {
+            setUserName(email);
+          }
+        }   
+     
+      } catch (error) {
+        console.log("Error retrieving email:", error);
+      }
+    }
+    getUsername();
+  }, []);
+
 
   const handleOnClickHome = (e: MouseEvent<HTMLLIElement>):void => {
     e.preventDefault();
@@ -27,6 +46,20 @@ const NavBar = ({ username }: props) => {
     e.preventDefault();
     router.push("/browse/my-list");
   };
+
+  const handleSignOut = async() =>{
+try {
+  if (magic instanceof Magic){
+    await magic.user.logout();
+    router.push("/login")
+  }
+ 
+} catch (error) {
+  console.error("Error retrievong email", error);
+  router.push("/login")
+  
+}
+  }
 
   return (
     <div className={styles.container}>
@@ -48,7 +81,7 @@ const NavBar = ({ username }: props) => {
       <nav className={styles.navContainer}>
         <div>
           <button className={styles.usernameBtn} onClick={handleShowDropdown}>
-            <p className={styles.username}>{username}</p>
+            <p className={styles.username}>{userName}</p>
             <Image
                 src="/static/expand_more.svg"
                 alt="Expand more"
@@ -58,7 +91,7 @@ const NavBar = ({ username }: props) => {
           </button>
           {showDropdown && (<div className={styles.navDropdown}>
             <div>
-            <Link href="/login" className={styles.linkName}>Sign Out</Link>
+            <button  className={styles.linkName} onClick={handleSignOut}>Sign Out</button>
             <div className={styles.lineWrapper}></div>
 
             </div>

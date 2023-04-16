@@ -39,8 +39,11 @@ const Login = () => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
+    if(email.length<1){
+      setUserMsg("Provide a valid email");
+      return;
+    }
     if (email) {
-      if (email === "joseluy123@gmail.com") {
         //show the dashboard
         // router.push("/")
         try {
@@ -66,9 +69,6 @@ const Login = () => {
         setIsLoading(false)
         setUserMsg("Something went wrong logging In");
       }
-    } else {
-      setUserMsg("Enter a valid email address");
-    }
   };
 
   return (
