@@ -1,28 +1,27 @@
 // import { Video } from "../../Types";
+import Link from "next/link";
 import Card from "./card";
-import styles from "./sectionCards.module.css"
-
+import styles from "./sectionCards.module.css";
 
 interface props {
   title: string;
-  videos:Video[];
-  size:string;
+  videos: Video[];
+  size: string;
 }
 
-const SectionCards = ({title,videos=[],size}:props) => {
+const SectionCards = ({ title, videos = [], size }: props) => {
   return (
     <section className={styles.container}>
       <h2 className={styles.title}>{title}</h2>
       <div className={styles.cardWrapper}>
-        {videos.map(({title,imgUrl,id})=>{
+        {videos.map(({ title, imgUrl, id }) => {
           return (
-  <Card 
-  imgUrl={imgUrl}
-  size={size}
-  id= {id}
-  />
-        )})}
-{/*       
+            <Link href={`/videos/${id}`} key={id}>
+              <Card imgUrl={imgUrl} size={size} id={id} />
+            </Link>
+          );
+        })}
+        {/*       
         <Card 
         imgUrl="/static/intestellar.jpg"
         size="large"
