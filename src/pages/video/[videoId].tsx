@@ -3,19 +3,50 @@ import Modal from "react-modal"
 import styles from "../../styles/Video.module.css"
 
 Modal.setAppElement("#__next")
+export async function getStaticProps() {
 
-const Video = () => {
-  const router = useRouter();
-  const {query: videoId} = router
-  console.log({router});
-  
-  const video = {
+  const video= {
     title:'Hi cute dog',
     publishTime: '1990-01-01',
     description: 'A big red dog that is super cute, can he get any bigger?',
     channelTitle:  'Paramount Pictures',
     viewCount: 10000,
   }
+  return {
+    props: {
+      video,
+    },
+    revalidate: 10, // In seconds
+  };
+}
+
+export async function getStaticPaths() {
+  const listOfVideos = ["mYfJxlgR2jw", "4zH5iYM4wJo", "KCPEHsAViiQ"];
+  const paths = listOfVideos.map((videoId) => ({
+    params: { videoId },
+  }));
+
+  return { paths, fallback: "blocking" };
+}
+
+interface Video {
+  title:string,
+  publishTime:string,
+  description: string,
+  channelTitle:  string,
+  viewCount: number,
+}
+
+
+interface Props {
+ video:Video,
+}
+
+
+const Video = ({video}:Props) => {
+  const router = useRouter();
+  const {query: videoId} = router
+  console.log({router});
 
   const {title,publishTime,description,channelTitle,viewCount} =video;
 
