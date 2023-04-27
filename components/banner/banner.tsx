@@ -6,14 +6,15 @@ interface props {
   title: string;
   subTitle: string;
   imgUrl: string;
+  videoId: String;
 }
-const Banner = ({ title, subTitle, imgUrl }: props) => {
+const Banner = ({ title, subTitle, imgUrl,videoId }: props) => {
 
   const router = useRouter();
 
   const handleOnPlay = (): void => {
     console.log("handleOnPlay");
-    // router.push(`video/${videoId}`)
+    router.push(`video/${videoId}`)
   };
   return (
     <div className={styles.container}>

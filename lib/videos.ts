@@ -1,6 +1,6 @@
 interface dataFetch {
-  snippet: { title: string; thumbnails: { high: { url: string } } };
-  id: {videoId:string};
+  snippet: { title: string; thumbnails: { high: { url: string } }; description: string; channelTitle: string, publishedAt:string };
+  id: {videoId:string}; statistics:{viewCount: string}
 }
 
 export const getCommonVideos = async (url:string) => {
@@ -14,6 +14,9 @@ try {
   );
 
   const data = await response.json();
+
+  
+  
   return data?.items.map(
     ({
       snippet: {
@@ -21,13 +24,22 @@ try {
         thumbnails: {
           high: { url },
         },
+        description,
+        channelTitle,
+        publishedAt
       },
       id,
+      statistics :{viewCount}
     }: dataFetch) => {
       return {
         title,
         imgUrl: url,
         id: id?.videoId || id,
+        description,
+        channelTitle,
+        publishTime:publishedAt,
+        viewCount: viewCount??'0'
+        
       };
     }
   );
@@ -39,6 +51,8 @@ try {
 
 
 export const getVideos = (searchQuery:string) => {
+
+  
   const URL = `search?part=snippet&q=${searchQuery}&type=video`;
   return getCommonVideos(URL);
 };
@@ -46,5 +60,11 @@ export const getVideos = (searchQuery:string) => {
 export const getPopularVideos = () => {
   const URL =
     "videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&regionCode=US";
+  return getCommonVideos(URL);
+};
+
+export const getYoutubeVideoById = (videoId:string) => {
+  const URL = `videos?part=snippet%2CcontentDetails%2Cstatistics&id=${videoId}`;
+
   return getCommonVideos(URL);
 };

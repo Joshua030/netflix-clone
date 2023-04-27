@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: flex-start;
   min-height: 100vh;
-  background-color: var(--black);
+  background-color: black;
 
   background-image: linear-gradient(rgb(0 0 0 / 60%), rgb(0 0 0 / 60%)),
     url(/static/netflix-main-background.jpg);

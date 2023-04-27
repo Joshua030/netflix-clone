@@ -29,7 +29,7 @@ popularVideos:Video[]
 }
 
 export default function Home({disneyVideos,travelVideos,productivityVideos,popularVideos}:props) {
-  console.log({magic});
+ 
   
   return (
     <div>
@@ -46,6 +46,7 @@ export default function Home({disneyVideos,travelVideos,productivityVideos,popul
         title="clifford the red dog"
         subTitle="a very cute dog"
         imgUrl="/static/intestellar.jpg"
+        videoId="4zH5iYM4wJo"
       />
       <div className={styles.sectionWrapper}>
         <SectionCards title="Disney" videos={disneyVideos} size="large"/>
