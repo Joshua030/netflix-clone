@@ -3,6 +3,7 @@ import Modal from "react-modal"
 import styles from "../../styles/Video.module.css"
 import { getYoutubeVideoById } from "../../../lib/videos";
 import { GetStaticPropsContext } from "next";
+import NavBar from "../../../components/nav/navBar";
 
 Modal.setAppElement("#__next")
 export async function getStaticProps(context:GetStaticPropsContext) {
@@ -14,9 +15,10 @@ export async function getStaticProps(context:GetStaticPropsContext) {
   //   channelTitle:  'Paramount Pictures',
   //   viewCount: 10000,
 
-  const videoIds = context?.params?.videoId ?? "5KZ3MKraNKY"
+ 
+  const videoIds = context?.params?.videoId ?? "4zH5iYM4wJo"
   const videoId = Array.isArray(videoIds) ? videoIds[0] : videoIds ;
-
+  console.log({context});
 
 
 
@@ -64,8 +66,9 @@ const Video = ({video}:Props) => {
   const {title,publishTime,description,channelTitle,viewCount} =video;
 
   return (
-    <div>
+    <div className={styles.container}>
     {/* video page {router.query.videoId} */}
+    <NavBar />
     <Modal
       isOpen={true}
       contentLabel="Watch the video"

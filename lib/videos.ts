@@ -14,8 +14,6 @@ try {
   );
 
   const data = await response.json();
-
-  
   
   return data?.items.map(
     ({
@@ -29,7 +27,7 @@ try {
         publishedAt
       },
       id,
-      statistics :{viewCount}
+      statistics 
     }: dataFetch) => {
       return {
         title,
@@ -38,7 +36,7 @@ try {
         description,
         channelTitle,
         publishTime:publishedAt,
-        viewCount: viewCount??'0'
+        viewCount: statistics?.viewCount??'0'
         
       };
     }

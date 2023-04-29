@@ -9,22 +9,22 @@ import Loading from '../../components/loading/loading';
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const handleLoggedIn = async () => {
-      if (magic instanceof Magic){
-        const isLoggedIn = await magic.user.isLoggedIn();
-        if (isLoggedIn) {
-          // route to /
-          router.push("/");
-        } else {
-          // route to /login
-          router.push("/login");
-        }
-      }
-    };
-    handleLoggedIn();
+    // const handleLoggedIn = async () => {
+    //   if (magic instanceof Magic){
+    //     const isLoggedIn = await magic.user.isLoggedIn();
+    //     if (isLoggedIn) {
+    //       // route to /
+    //       router.push("/");
+    //     } else {
+    //       // route to /login
+    //       router.push("/login");
+    //     }
+    //   }
+    // };
+    // handleLoggedIn();
   }, []);
 
   useEffect(() => {

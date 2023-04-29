@@ -16,7 +16,7 @@ const SectionCards = ({ title, videos = [], size }: props) => {
       <div className={styles.cardWrapper}>
         {videos.map(({ title, imgUrl, id }) => {
           return (
-            <Link href={`/videos/${id}`} key={id}>
+            <Link href={`/video/${id}`} key={id}>
               <Card imgUrl={imgUrl} size={size} id={id} />
             </Link>
           );
