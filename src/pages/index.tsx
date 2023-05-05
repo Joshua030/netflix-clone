@@ -9,6 +9,7 @@ import { magic } from "../../lib/magic-client";
 
 
 
+
 export async function getServerSideProps () {
   const disneyVideos = await getVideos("disney trailer");
   const productivityVideos = await getVideos("Productivity");
@@ -29,8 +30,7 @@ popularVideos:Video[]
 }
 
 export default function Home({disneyVideos,travelVideos,productivityVideos,popularVideos}:props) {
- 
-  
+
   return (
     <div>
       <Head>
