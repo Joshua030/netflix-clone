@@ -6,6 +6,7 @@ import Card from "../../components/card/card";
 import SectionCards from "../../components/card/sectionCards";
 import { getPopularVideos, getVideos } from "../../lib/videos";
 import { magic } from "../../lib/magic-client";
+import { startFetchMyQuery } from "../../lib/db/hasura";
 
 
 
@@ -31,6 +32,7 @@ popularVideos:Video[]
 
 export default function Home({disneyVideos,travelVideos,productivityVideos,popularVideos}:props) {
 
+  startFetchMyQuery()
   return (
     <div>
       <Head>
