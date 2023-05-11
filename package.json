@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@magic-sdk/admin": "^1.10.0",
     "@magic-sdk/types": "^14.2.0",
     "@types/node": "18.15.3",
     "@types/react": "18.0.28",
