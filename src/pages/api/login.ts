@@ -3,6 +3,16 @@ import { magicAdmin } from "../../../lib/db/magic";
 import jwt from 'jsonwebtoken'
 import { isNewUser } from "../../../lib/db/hasura";
 
+interface Metadata {
+    issuer: string,
+    publicAddress: string,
+    email: string,
+    oauthProvider: string | null,
+    phoneNumber: string | null,
+    wallets: []
+  }
+
+
 export default async function login(
   req: NextApiRequest,
   res: NextApiResponse
@@ -11,10 +21,10 @@ export default async function login(
     try {
       const auth = req.headers.authorization;
       const didToken = auth ? auth.split(" ") : "";
-      console.log("token", didToken[1]);
+  
      // invoke magic
-      const metadata = await magicAdmin.users.getMetadataByToken(didToken[1]);
-      console.log({ metadata });
+      const metadata:Metadata = await magicAdmin.users.getMetadataByToken(didToken[1]);
+  
       // create jwt
 
       const token = jwt.sign({
@@ -27,13 +37,15 @@ export default async function login(
           "x-hasura-user-id": `${metadata.issuer}`,
         },
       },
-      "jacobojacobojacobojacobojacobo123456"
+     process.env.JWT_SECRET??""
     );
-console.log({token});
+
+    console.log({metadata});
+    
 
 //CHECK IF USER EXISTS
 
-const isNewUserQuery = await isNewUser(token)
+const isNewUserQuery = await isNewUser(token,metadata.issuer)
 
       res.send({ done: true , isNewUserQuery});
     } catch (error) {

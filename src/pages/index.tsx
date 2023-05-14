@@ -2,11 +2,10 @@ import Head from "next/head";
 import styles from "@/styles/Home.module.css";
 import Banner from "../../components/banner/banner";
 import NavBar from "../../components/nav/navBar";
-import Card from "../../components/card/card";
 import SectionCards from "../../components/card/sectionCards";
 import { getPopularVideos, getVideos } from "../../lib/videos";
-import { magic } from "../../lib/magic-client";
-import { startFetchMyQuery } from "../../lib/db/hasura";
+
+
 
 
 
@@ -32,7 +31,7 @@ popularVideos:Video[]
 
 export default function Home({disneyVideos,travelVideos,productivityVideos,popularVideos}:props) {
 
-  startFetchMyQuery()
+
   return (
     <div>
       <Head>
