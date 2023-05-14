@@ -55,7 +55,22 @@ const Login = () => {
             // console.log({didToken});
             if(didToken){ 
               // setIsLoading(false)
-              router.push('/');}
+              const response = await fetch('api/login', {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${didToken}`,
+                  'Content-type': 'application/json'
+                }
+              })
+
+              const loggedInResponse :{done: boolean}= await response.json();
+              if(loggedInResponse.done){
+                console.log({loggedInResponse});
+                router.push('/');}   
+              } else {
+                setIsLoading(false);
+                setUserMsg("Something went wrong logging in")
+              }
             
           } else {
             console.log("magic setup failed");

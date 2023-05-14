@@ -1,18 +1,17 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { magicAdmin } from "../../../lib/db/magic";
-import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken";
 import { createNewUser, isNewUser } from "../../../lib/db/hasura";
 import { setTokenCookie } from "../../../lib/cookies";
 
 export interface Metadata {
-    issuer: string,
-    publicAddress: string,
-    email: string,
-    oauthProvider: string | null,
-    phoneNumber: string | null,
-    wallets: []
-  }
-
+  issuer: string;
+  publicAddress: string;
+  email: string;
+  oauthProvider: string | null;
+  phoneNumber: string | null;
+  wallets: [];
+}
 
 export default async function login(
   req: NextApiRequest,
@@ -22,49 +21,35 @@ export default async function login(
     try {
       const auth = req.headers.authorization;
       const didToken = auth ? auth.split(" ") : "";
-  
-     // invoke magic
-      const metadata:Metadata = await magicAdmin.users.getMetadataByToken(didToken[1]);
-  
+
+      // invoke magic
+      const metadata: Metadata = await magicAdmin.users.getMetadataByToken(
+        didToken[1]
+      );
+
       // create jwt
 
-      const token = jwt.sign({
-        ...metadata,
-        iat: Math.floor(Date.now() / 1000),
-        exp: Math.floor(Date.now() / 1000 + 7 * 24 * 60 * 60),
-        "https://hasura.io/jwt/claims": {
-          "x-hasura-allowed-roles": ["user", "admin"],
-          "x-hasura-default-role": "user",
-          "x-hasura-user-id": `${metadata.issuer}`,
+      const token = jwt.sign(
+        {
+          ...metadata,
+          iat: Math.floor(Date.now() / 1000),
+          exp: Math.floor(Date.now() / 1000 + 7 * 24 * 60 * 60),
+          "https://hasura.io/jwt/claims": {
+            "x-hasura-allowed-roles": ["user", "admin"],
+            "x-hasura-default-role": "user",
+            "x-hasura-user-id": `${metadata.issuer}`,
+          },
         },
-      },
-     process.env.JWT_SECRET??""
-    );
+        process.env.JWT_SECRET ?? ""
+      );
 
-  
-    
+      //CHECK IF USER EXISTS
 
-//CHECK IF USER EXISTS
+      const isNewUserQuery = await isNewUser(token, metadata.issuer);
+      isNewUserQuery && createNewUser(token, metadata);
 
-const isNewUserQuery = await isNewUser(token,metadata.issuer)
-
-if(isNewUserQuery) {
-  // create a new user
-  const createNewUserMutation = await createNewUser(token,metadata);
-  console.log({createNewUserMutation});
-  //set the cookie
-  const cookie = setTokenCookie(token,res)
-  console.log({cookie});
-  res.send({ done: true , msg:"is a new user"});
-} else {
-    //set the cookie
-   const cookie = setTokenCookie(token,res)
-   console.log({cookie});
-   
-  res.send({ done: true , msg: "not a new user"});
-} 
-
-   
+      setTokenCookie(token, res);
+      res.send({ done: true });
     } catch (error) {
       res.status(500).send({ done: false });
       console.error("something went wrong loggin in", error);
