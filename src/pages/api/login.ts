@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { magicAdmin } from "../../../lib/db/magic";
 import jwt from 'jsonwebtoken'
 import { createNewUser, isNewUser } from "../../../lib/db/hasura";
+import { setTokenCookie } from "../../../lib/cookies";
 
 export interface Metadata {
     issuer: string,
@@ -51,9 +52,15 @@ if(isNewUserQuery) {
   // create a new user
   const createNewUserMutation = await createNewUser(token,metadata);
   console.log({createNewUserMutation});
-  
+  //set the cookie
+  const cookie = setTokenCookie(token,res)
+  console.log({cookie});
   res.send({ done: true , msg:"is a new user"});
 } else {
+    //set the cookie
+   const cookie = setTokenCookie(token,res)
+   console.log({cookie});
+   
   res.send({ done: true , msg: "not a new user"});
 } 
 
