@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { magicAdmin } from "../../../lib/db/magic";
 import jwt from 'jsonwebtoken'
-import { isNewUser } from "../../../lib/db/hasura";
+import { createNewUser, isNewUser } from "../../../lib/db/hasura";
 
-interface Metadata {
+export interface Metadata {
     issuer: string,
     publicAddress: string,
     email: string,
@@ -40,14 +40,24 @@ export default async function login(
      process.env.JWT_SECRET??""
     );
 
-    console.log({metadata});
+  
     
 
 //CHECK IF USER EXISTS
 
 const isNewUserQuery = await isNewUser(token,metadata.issuer)
 
-      res.send({ done: true , isNewUserQuery});
+if(isNewUserQuery) {
+  // create a new user
+  const createNewUserMutation = await createNewUser(token,metadata);
+  console.log({createNewUserMutation});
+  
+  res.send({ done: true , msg:"is a new user"});
+} else {
+  res.send({ done: true , msg: "not a new user"});
+} 
+
+   
     } catch (error) {
       res.status(500).send({ done: false });
       console.error("something went wrong loggin in", error);

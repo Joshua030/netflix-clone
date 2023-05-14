@@ -1,3 +1,6 @@
+import { Metadata } from "@/pages/api/login";
+
+
 interface FetchGraph {
   operationsDoc: string;
   operationName: String;
@@ -7,7 +10,9 @@ interface FetchGraph {
 
 interface FetchGraphResult {
   errors: object[] | null;
-  users?: User[] | null;
+  data?:{
+    users?: User[] | null;
+  }
   } 
 
 
@@ -15,6 +20,36 @@ interface User {
   email: string;
   id: string;
   issuer: string;
+}
+
+
+export async function createNewUser(token:string, metadata:Metadata) {
+  const operationsDoc = `
+  mutation createNewUser($issuer: String!, $email: String!, $publicAddress: String!) {
+    insert_users(objects: {email: $email, issuer: $issuer, publicAddress: $publicAddress}) {
+      returning {
+        email
+        id
+        issuer
+      }
+    }
+  }
+`;
+
+const { issuer, email, publicAddress } = metadata;
+const response = await queryHasuraGQL({
+  operationsDoc,
+  operationName: "createNewUser",
+  variables: {
+    issuer,
+    email,
+    publicAddress,
+  },
+  token
+});
+
+console.log({response, issuer});
+return response;
 }
 
 export async function isNewUser(token:string, issuer:string) {
@@ -39,7 +74,7 @@ const response = await queryHasuraGQL({
 });
 
 console.log({response, issuer});
-return response?.users?.length === 0 ? true: false;
+return response?.data?.users?.length === 0 ? true: false;
 }
 
 export async function queryHasuraGQL({
