@@ -46,7 +46,7 @@ export default function Home({disneyVideos,travelVideos,productivityVideos,popul
       <Banner
         title="clifford the red dog"
         subTitle="a very cute dog"
-        imgUrl="/static/intestellar.jpg"
+        imgUrl="/static/clifford.webp"
         videoId="4zH5iYM4wJo"
       />
       <div className={styles.sectionWrapper}>

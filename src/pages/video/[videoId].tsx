@@ -1,13 +1,15 @@
-import {useRouter} from "next/router"
-import Modal from "react-modal"
-import styles from "../../styles/Video.module.css"
+import { useRouter } from "next/router";
+import Modal from "react-modal";
+import styles from "../../styles/Video.module.css";
 import { getYoutubeVideoById } from "../../../lib/videos";
 import { GetStaticPropsContext } from "next";
 import NavBar from "../../../components/nav/navBar";
+import Like from "../../../components/icons/like-icon";
+import DisLike from "../../../components/icons/dislike-icon";
+import { useState } from "react";
 
-Modal.setAppElement("#__next")
-export async function getStaticProps(context:GetStaticPropsContext) {
-
+Modal.setAppElement("#__next");
+export async function getStaticProps(context: GetStaticPropsContext) {
   // const video= {
   //   title:'Hi cute dog',
   //   publishTime: '1990-01-01',
@@ -15,18 +17,14 @@ export async function getStaticProps(context:GetStaticPropsContext) {
   //   channelTitle:  'Paramount Pictures',
   //   viewCount: 10000,
 
- 
-  const videoIds = context?.params?.videoId ?? "4zH5iYM4wJo"
-  const videoId = Array.isArray(videoIds) ? videoIds[0] : videoIds ;
-  console.log({context});
-
-
-
+  const videoIds = context?.params?.videoId ?? "4zH5iYM4wJo";
+  const videoId = Array.isArray(videoIds) ? videoIds[0] : videoIds;
+  console.log({ context });
 
   // const videoId = "4zH5iYM4wJo";
 
   const videoArray = await getYoutubeVideoById(videoId);
-  
+
   return {
     props: {
       video: videoArray.length > 0 ? videoArray[0] : {},
@@ -45,38 +43,53 @@ export async function getStaticPaths() {
 }
 
 interface Video {
-  title:string,
-  publishTime:string,
-  description: string,
-  channelTitle:  string,
-  viewCount: string
+  title: string;
+  publishTime: string;
+  description: string;
+  channelTitle: string;
+  viewCount: string;
 }
-
 
 interface Props {
- video:Video,
+  video: Video;
 }
 
-
-const Video = ({video}:Props) => {
+const Video = ({ video }: Props) => {
   const router = useRouter();
-  const {query: {videoId}} = router
-  console.log({video});
+  const {
+    query: { videoId },
+  } = router;
+  console.log({ video });
 
-  const {title,publishTime,description,channelTitle,viewCount} =video;
+  const [toggleLike, setToggleLike] = useState(false)
+  const [toggleDislike, setToggleDisLike] = useState(false)
+
+  const { title, publishTime, description, channelTitle, viewCount } = video;
+
+  const handleToggleDislike = () : void => {
+    console.log('handleToggleDislike');
+    setToggleDisLike(!toggleDislike);
+    setToggleLike(toggleDislike); 
+  }
+
+  const handleToggleLike = (): void => {
+    console.log('handleToggleLike');
+    setToggleLike(!toggleLike);
+    setToggleDisLike(toggleLike);
+  }
 
   return (
     <div className={styles.container}>
-    {/* video page {router.query.videoId} */}
-    <NavBar />
-    <Modal
-      isOpen={true}
-      contentLabel="Watch the video"
-      onRequestClose={() => router.back()}
-      className={styles.modal}
-      overlayClassName={styles.overlay}
-    >
-      <iframe
+      {/* video page {router.query.videoId} */}
+      <NavBar />
+      <Modal
+        isOpen={true}
+        contentLabel="Watch the video"
+        onRequestClose={() => router.back()}
+        className={styles.modal}
+        overlayClassName={styles.overlay}
+      >
+        <iframe
           id="ytplayer"
           className={styles.videoPlayer}
           width="100%"
@@ -85,6 +98,22 @@ const Video = ({video}:Props) => {
           // src="https://www.youtube.com/embed/4zH5iYM4wJo?autoplay=1&origin=http://example.com&controls=0&rel=0"
           frameBorder="0"
         ></iframe>
+
+        <div className={styles.likeDislikeBtnWrapper}>
+          <div className="likeBtnWrapper">
+            <button onClick={handleToggleLike}>
+              <div className={styles.btnWrapper}>
+                <Like selected={toggleLike}  />
+              </div>
+            </button>
+          </div>
+
+          <button onClick={handleToggleDislike}>
+            <div className={styles.btnWrapper}>
+              <DisLike selected={toggleDislike}  />
+            </div>
+          </button>
+        </div>
         <div className={styles.modalBody}>
           <div className={styles.modalBodyContent}>
             <div className={styles.col1}>
@@ -99,15 +128,14 @@ const Video = ({video}:Props) => {
               </p>
               <p className={`${styles.subText} ${styles.subTextWrapper}`}>
                 <span className={styles.textColor}>View Count: </span>
-                <span className={styles.channelTitle}>{viewCount??0}</span>
+                <span className={styles.channelTitle}>{viewCount ?? 0}</span>
               </p>
             </div>
           </div>
         </div>
-    </Modal>
-  </div>
- )
-  
+      </Modal>
+    </div>
+  );
 };
 
-export default Video
+export default Video;

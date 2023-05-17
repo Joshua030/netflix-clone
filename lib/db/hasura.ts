@@ -22,6 +22,33 @@ interface User {
   issuer: string;
 }
 
+export async function findVideoIdByUser(userId:string, videoId:string, token:string) {
+  const operationsDoc=   `query findVideoIdByUserId ($userId: String!, $videoId: String!){
+    stats(where: {userId: {_eq: $userId}, videoId: {_eq: $videoId}}) {
+      id
+      userId
+      videoId
+      favourited
+      watched
+    }
+  }
+`;
+
+
+const response = await queryHasuraGQL({
+  operationsDoc,
+  operationName: "findVideoIdByUserId",
+  variables: {
+    videoId,
+    userId
+  },
+  token
+});
+
+console.log({response});
+return response;
+}
+
 
 export async function createNewUser(token:string, metadata:Metadata) {
   const operationsDoc = `

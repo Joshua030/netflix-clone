@@ -47,7 +47,6 @@ const Banner = ({ title, subTitle, imgUrl,videoId }: props) => {
           height: "100%",
           position: "absolute",
           backgroundSize: "cover",
-          backgroundPosition: "center",
         }}
       ></div>
     </div>
