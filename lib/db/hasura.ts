@@ -1,20 +1,19 @@
 import { Metadata } from "@/pages/api/login";
 
-
 interface FetchGraph {
   operationsDoc: string;
   operationName: String;
   variables: Object;
-  token:string
+  token: string;
 }
 
 interface FetchGraphResult {
   errors: object[] | null;
-  data?:{
+  data?: {
     users?: User[] | null;
-  }
-  } 
-
+    stats?: User[] | null;
+  };
+}
 
 interface User {
   email: string;
@@ -22,8 +21,12 @@ interface User {
   issuer: string;
 }
 
-export async function findVideoIdByUser(userId:string, videoId:string, token:string) {
-  const operationsDoc=   `query findVideoIdByUserId ($userId: String!, $videoId: String!){
+export async function findVideoIdByUser(
+  userId: string,
+  videoId: string,
+  token: string
+) {
+  const operationsDoc = `query findVideoIdByUserId ($userId: String!, $videoId: String!){
     stats(where: {userId: {_eq: $userId}, videoId: {_eq: $videoId}}) {
       id
       userId
@@ -34,23 +37,19 @@ export async function findVideoIdByUser(userId:string, videoId:string, token:str
   }
 `;
 
-
-const response = await queryHasuraGQL({
-  operationsDoc,
-  operationName: "findVideoIdByUserId",
-  variables: {
-    videoId,
-    userId
-  },
-  token
-});
-
-console.log({response});
-return response;
+  const response = await queryHasuraGQL({
+    operationsDoc,
+    operationName: "findVideoIdByUserId",
+    variables: {
+      videoId,
+      userId,
+    },
+    token,
+  });
+  return response?.data?.stats?.length;
 }
 
-
-export async function createNewUser(token:string, metadata:Metadata) {
+export async function createNewUser(token: string, metadata: Metadata) {
   const operationsDoc = `
   mutation createNewUser($issuer: String!, $email: String!, $publicAddress: String!) {
     insert_users(objects: {email: $email, issuer: $issuer, publicAddress: $publicAddress}) {
@@ -63,23 +62,23 @@ export async function createNewUser(token:string, metadata:Metadata) {
   }
 `;
 
-const { issuer, email, publicAddress } = metadata;
-const response = await queryHasuraGQL({
-  operationsDoc,
-  operationName: "createNewUser",
-  variables: {
-    issuer,
-    email,
-    publicAddress,
-  },
-  token
-});
+  const { issuer, email, publicAddress } = metadata;
+  const response = await queryHasuraGQL({
+    operationsDoc,
+    operationName: "createNewUser",
+    variables: {
+      issuer,
+      email,
+      publicAddress,
+    },
+    token,
+  });
 
-console.log({response, issuer});
-return response;
+  console.log({ response, issuer });
+  return response;
 }
 
-export async function isNewUser(token:string, issuer:string) {
+export async function isNewUser(token: string, issuer: string) {
   const operationsDoc = `
   query isNewUser ($issuer:String!){
     users(where: {issuer: {_eq: $issuer }}) {
@@ -90,31 +89,29 @@ export async function isNewUser(token:string, issuer:string) {
   }
 `;
 
+  const response = await queryHasuraGQL({
+    operationsDoc,
+    operationName: "isNewUser",
+    variables: {
+      issuer,
+    },
+    token,
+  });
 
-const response = await queryHasuraGQL({
-  operationsDoc,
-  operationName: "isNewUser",
-  variables: {
-    issuer
-  },
-  token
-});
-
-console.log({response, issuer});
-return response?.data?.users?.length === 0 ? true: false;
+  console.log({ response, issuer });
+  return response?.data?.users?.length === 0 ? true : false;
 }
 
 export async function queryHasuraGQL({
   operationsDoc,
   operationName,
   variables,
-  token
+  token,
 }: FetchGraph): Promise<FetchGraphResult> {
   const result = await fetch(process.env.NEXT_PUBLIC_HASURA_ADMIN_URL ?? "", {
     method: "POST",
     headers: {
-      Authorization:
-      `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
       "Content-type": "application/json",
     },
     body: JSON.stringify({
@@ -126,4 +123,3 @@ export async function queryHasuraGQL({
 
   return await result.json();
 }
-
