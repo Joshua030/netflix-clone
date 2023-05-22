@@ -11,7 +11,7 @@ interface FetchGraphResult {
   errors: object[] | null;
   data?: {
     users?: User[] | null;
-    stats?: User[] | null;
+    stats?: User[];
   };
 }
 
@@ -19,6 +19,81 @@ interface User {
   email: string;
   id: string;
   issuer: string;
+}
+
+interface Stats {
+  favourited: number;
+  userId: string;
+  watched: boolean;
+  videoId: string;
+}
+
+export async function insertStats(
+  token: string,
+  { favourited, userId, watched, videoId }: Stats
+) {
+  const operationsDoc = `
+  mutation insertStats($favourited: Int!, $userId: String!, $watched: Boolean!, $videoId: String!) {
+    insert_stats_one(object: {
+      favourited: $favourited, 
+      userId: $userId, 
+      watched: $watched, 
+      videoId: $videoId
+    }) {
+        favourited
+        id
+        userId
+    }
+  }
+`;
+
+  return await queryHasuraGQL({
+    operationsDoc,
+    operationName: "insertStats",
+    variables: {
+      favourited,
+      userId,
+      watched,
+      videoId,
+    },
+    token,
+  });
+}
+export async function updateStats(
+  token: string,
+  { favourited, userId, watched, videoId }: Stats
+) {
+  const operationsDoc = `
+mutation updateStats($favourited: Int!, $userId: String!, $watched: Boolean!, $videoId: String!) {
+  update_stats(
+    _set: {watched: $watched, favourited: $favourited}, 
+    where: {
+      userId: {_eq: $userId}, 
+      videoId: {_eq: $videoId}
+    }) {
+    returning {
+      favourited,
+      userId,
+      watched,
+      videoId
+    }
+  }
+}
+`;
+
+  const response = await queryHasuraGQL({
+    operationsDoc,
+    operationName: "updateStats",
+    variables: {
+      favourited,
+      userId,
+      watched,
+      videoId,
+    },
+    token,
+  });
+
+  return response;
 }
 
 export async function findVideoIdByUser(
@@ -46,7 +121,9 @@ export async function findVideoIdByUser(
     },
     token,
   });
-  return response?.data?.stats?.length;
+
+  const length = response?.data?.stats?.length || 0;
+  return length > 0;
 }
 
 export async function createNewUser(token: string, metadata: Metadata) {
