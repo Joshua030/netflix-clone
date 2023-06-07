@@ -11,7 +11,7 @@ interface FetchGraphResult {
   errors: object[] | null;
   data?: {
     users?: User[] | null;
-    stats?: User[];
+    stats?: Stats[];
   };
 }
 
@@ -26,6 +26,11 @@ interface Stats {
   userId: string;
   watched: boolean;
   videoId: string;
+}
+
+interface VideoInfo {
+  videoId: string;
+  watched: boolean;
 }
 
 export async function insertStats(
@@ -101,8 +106,9 @@ export async function findVideoIdByUser(
   videoId: string,
   token: string
 ) {
-  const operationsDoc = `query findVideoIdByUserId ($userId: String!, $videoId: String!){
-    stats(where: {userId: {_eq: $userId}, videoId: {_eq: $videoId}}) {
+  const operationsDoc =`
+  query findVideoIdByUserId($userId: String!, $videoId: String!) {
+    stats(where: { userId: {_eq: $userId}, videoId: {_eq: $videoId }}) {
       id
       userId
       videoId
@@ -122,8 +128,12 @@ export async function findVideoIdByUser(
     token,
   });
 
-  const length = response?.data?.stats?.length || 0;
-  return length > 0;
+  console.log(response.data);
+  
+  const length = response?.data?.stats || [];
+
+  
+  return length;
 }
 
 export async function createNewUser(token: string, metadata: Metadata) {
@@ -199,4 +209,36 @@ export async function queryHasuraGQL({
   });
 
   return await result.json();
+}
+
+export async function getWatchedVideos(userId:string, token:string) {
+  const operationsDoc = `
+  query watchedVideos($userId: String!) {
+    stats(where: {
+      watched: {_eq: true}, 
+      userId: {_eq: $userId},
+    }) {
+      videoId
+    }
+  }
+`;
+
+
+const response = await queryHasuraGQL({
+  operationsDoc,
+  operationName: "watchedVideos",
+  variables: {
+    userId,
+  },
+  token,
+});
+
+
+
+
+const data = response?.data?.stats;
+
+
+return data
+
 }

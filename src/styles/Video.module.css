@@ -114,11 +114,14 @@
   position: absolute;
   top: 35%;
   padding-left: 1rem /* 48px */;
+  z-index: 9999;
 }
 
 .likeBtnWrapper {
   margin-right: 0.5rem;
 }
+
+
 
 .btnWrapper {
   border-color: var(--white10);

@@ -6,7 +6,7 @@ import { GetStaticPropsContext } from "next";
 import NavBar from "../../../components/nav/navBar";
 import Like from "../../../components/icons/like-icon";
 import DisLike from "../../../components/icons/dislike-icon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 Modal.setAppElement("#__next");
 export async function getStaticProps(context: GetStaticPropsContext) {
@@ -59,24 +59,66 @@ const Video = ({ video }: Props) => {
   const {
     query: { videoId },
   } = router;
-  console.log({ video });
 
-  const [toggleLike, setToggleLike] = useState(false)
-  const [toggleDislike, setToggleDisLike] = useState(false)
+  const [toggleLike, setToggleLike] = useState(false);
+  const [toggleDislike, setToggleDisLike] = useState(false);
 
   const { title, publishTime, description, channelTitle, viewCount } = video;
 
-  const handleToggleDislike = () : void => {
-    console.log('handleToggleDislike');
-    setToggleDisLike(!toggleDislike);
-    setToggleLike(toggleDislike); 
-  }
+  useEffect(() => {
+    const handleLikeDislikeService = async () => {
+      const response = await fetch(`/api/stats?videoId=${videoId}`, {
+        method: "GET",
+      });
+      const data = await response.json();
+console.log({data});
 
-  const handleToggleLike = (): void => {
-    console.log('handleToggleLike');
-    setToggleLike(!toggleLike);
+      if (data.length > 0) {
+        const favourited = data[0].favourited;
+        console.log({favourited});
+        
+        if (favourited === 1) {
+          setToggleLike(true);
+        } else if (favourited === 0) {
+          setToggleDisLike(true);
+        }
+      }
+    };
+    handleLikeDislikeService();
+  }, [videoId]);
+
+  const runRatingService = async (favourited: number) => {
+    return await fetch("/api/stats", {
+      method: "POST",
+      body: JSON.stringify({
+        videoId,
+        favourited,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  };
+
+  const handleToggleDislike = async () => {
+    setToggleDisLike(!toggleDislike);
+    setToggleLike(toggleDislike);
+    const val = !toggleLike;
+    const favourited = val ? 0 : 1;
+    const response = await runRatingService(favourited);
+    const data = await response.json();
+    console.log({ data });
+  };
+
+  const handleToggleLike = async () => {
+    const val = !toggleLike;
+    setToggleLike(val);
     setToggleDisLike(toggleLike);
-  }
+    const favourited = val ? 1 : 0;
+    const response = await runRatingService(favourited);
+    const data = await response.json();
+    console.log({ data });
+  };
 
   return (
     <div className={styles.container}>
@@ -94,23 +136,23 @@ const Video = ({ video }: Props) => {
           className={styles.videoPlayer}
           width="100%"
           height="360"
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=0&origin=http://example.com&controls=0&rel=1`}
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=0&origin=http://example.com&controls=0&rel=0`}
           // src="https://www.youtube.com/embed/4zH5iYM4wJo?autoplay=1&origin=http://example.com&controls=0&rel=0"
           frameBorder="0"
         ></iframe>
 
         <div className={styles.likeDislikeBtnWrapper}>
-          <div className="likeBtnWrapper">
+          <div className={styles.likeBtnWrapper}>
             <button onClick={handleToggleLike}>
               <div className={styles.btnWrapper}>
-                <Like selected={toggleLike}  />
+                <Like selected={toggleLike} />
               </div>
             </button>
           </div>
 
           <button onClick={handleToggleDislike}>
             <div className={styles.btnWrapper}>
-              <DisLike selected={toggleDislike}  />
+              <DisLike selected={toggleDislike} />
             </div>
           </button>
         </div>

@@ -1,7 +1,10 @@
+import { getWatchedVideos } from "./db/hasura";
+
 interface dataFetch {
   snippet: { title: string; thumbnails: { high: { url: string } }; description: string; channelTitle: string, publishedAt:string };
   id: {videoId:string}; statistics:{viewCount: string}
 }
+
 
 export const getCommonVideos = async (url:string) => {
   const YOUTUBE_API_KEY = process.env.YOU_TUBE_API_KEY;
@@ -31,7 +34,7 @@ try {
     }: dataFetch) => {
       return {
         title,
-        imgUrl: url,
+        imgUrl: `https://i.ytimg.com/vi/${id?.videoId || id}/maxresdefault.jpg`,
         id: id?.videoId || id,
         description,
         channelTitle,
@@ -65,4 +68,18 @@ export const getYoutubeVideoById = (videoId:string) => {
   const URL = `videos?part=snippet%2CcontentDetails%2Cstatistics&id=${videoId}`;
 
   return getCommonVideos(URL);
+};
+
+export const getWatchAgainVideos = async (userId: string, token:string) => {
+  const videos = await getWatchedVideos(userId, token);
+ 
+  
+  return (
+    videos?.map((video) => {
+      return {
+        id: video?.videoId,
+        imgUrl: `https://i.ytimg.com/vi/${video.videoId}/maxresdefault.jpg`,
+      };
+    }) || []
+  );
 };

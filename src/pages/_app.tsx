@@ -12,19 +12,19 @@ export default function App({ Component, pageProps }: AppProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // const handleLoggedIn = async () => {
-    //   if (magic instanceof Magic){
-    //     const isLoggedIn = await magic.user.isLoggedIn();
-    //     if (isLoggedIn) {
-    //       // route to /
-    //       router.push("/");
-    //     } else {
-    //       // route to /login
-    //       router.push("/login");
-    //     }
-    //   }
-    // };
-    // handleLoggedIn();
+    const handleLoggedIn = async () => {
+      if (magic instanceof Magic){
+        const isLoggedIn = await magic.user.isLoggedIn();
+        if (isLoggedIn) {
+          // route to /
+          router.push("/");
+        } else {
+          // route to /login
+          router.push("/login");
+        }
+      }
+    };
+    handleLoggedIn();
   }, []);
 
   useEffect(() => {

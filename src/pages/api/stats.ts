@@ -5,7 +5,7 @@ import { findVideoIdByUser, insertStats, updateStats } from "../../../lib/db/has
 interface Body {
   videoId:string;
   favourited: number;
-  watched: boolean
+  watched?: boolean
 }
 export default async function stats(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
@@ -20,7 +20,8 @@ export default async function stats(req: NextApiRequest, res: NextApiResponse) {
         process.env.JWT_SECRET ?? ""
       ) as jwt.JwtPayload;
       const userId: string = decodedToken.issuer;
-      const doesStatsExist = await findVideoIdByUser(userId, videoId, token);
+      const findVideo = await findVideoIdByUser(userId, videoId, token);
+      const doesStatsExist = findVideo.length > 0
       if (doesStatsExist) {
         // update it
         const response = await updateStats(token, {
@@ -46,6 +47,32 @@ export default async function stats(req: NextApiRequest, res: NextApiResponse) {
       console.error("Error ocurred /stats");
 
       res.status(500).send({ done: false, error: error?.message });
+    }
+  } else {
+    const token = req.cookies.token;
+    if (!token) {
+      res.status(403).send({});
+    } else {
+      const { videoId } = req.query;
+      if (videoId) {
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET??'') as jwt.JwtPayload;;
+     
+        
+        const userId = decodedToken.issuer;
+       
+        
+        const findVideo = await findVideoIdByUser(userId,videoId as string,token );
+    
+        
+        const doesStatsExist = findVideo?.length > 0;
+        if (doesStatsExist) {
+          res.send(findVideo);
+        } else {
+          // add it
+          res.status(404);
+          res.send({ user: null, msg: "Video not found" });
+        }
+      }
     }
   }
 }
