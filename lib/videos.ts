@@ -1,4 +1,4 @@
-import { getWatchedVideos } from "./db/hasura";
+import { getMyListVideos, getWatchedVideos } from "./db/hasura";
 
 interface dataFetch {
   snippet: { title: string; thumbnails: { high: { url: string } }; description: string; channelTitle: string, publishedAt:string };
@@ -74,6 +74,19 @@ export const getWatchAgainVideos = async (userId: string, token:string) => {
   const videos = await getWatchedVideos(userId, token);
  
   
+  return (
+    videos?.map((video) => {
+      return {
+        id: video?.videoId,
+        imgUrl: `https://i.ytimg.com/vi/${video.videoId}/maxresdefault.jpg`,
+      };
+    }) || []
+  );
+};
+
+export const getMyList = async (userId: string, token:string) => {
+  const videos = await getMyListVideos(userId, token);
+ 
   return (
     videos?.map((video) => {
       return {

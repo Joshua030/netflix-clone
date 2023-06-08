@@ -17,7 +17,6 @@ export async function getServerSideProps (context: NextPageContext) {
   const cookies = cookie.parse(context?.req?.headers.cookie || '');
   const token = cookies.token || '';
   const userId = await verifyToken(token);
-  console.log(userId);
   const watchItAgainVideos = await getWatchAgainVideos(userId, token);
   const disneyVideos = await getVideos("disney trailer");
   const productivityVideos = await getVideos("Productivity");
