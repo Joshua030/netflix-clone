@@ -128,7 +128,7 @@ export async function findVideoIdByUser(
     token,
   });
 
-  console.log(response.data);
+  
   
   const length = response?.data?.stats || [];
 
@@ -161,7 +161,7 @@ export async function createNewUser(token: string, metadata: Metadata) {
     token,
   });
 
-  console.log({ response, issuer });
+ 
   return response;
 }
 
@@ -185,7 +185,7 @@ export async function isNewUser(token: string, issuer: string) {
     token,
   });
 
-  console.log({ response, issuer });
+ 
   return response?.data?.users?.length === 0 ? true : false;
 }
 

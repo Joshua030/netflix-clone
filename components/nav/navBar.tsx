@@ -13,6 +13,7 @@ const NavBar = () => {
 
   const [showDropdown, setShowDropdown] = useState(false);
   const [userName, setUserName] = useState("")
+  const [didToken, setDidToken] = useState("")
 
   useEffect(() => {
     async function getUsername() {
@@ -20,7 +21,7 @@ const NavBar = () => {
         if (magic instanceof Magic){
           const { email} = await magic.user.getMetadata();
           const didToken = await magic.user.getIdToken();
-          console.log({didToken});
+         
           
           if (email) {
             setUserName(email);

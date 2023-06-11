@@ -52,7 +52,7 @@ const Login = () => {
            const didToken = await magic.auth.loginWithMagicLink({
               email,
             });
-            // console.log({didToken});
+          
             if(didToken){ 
               // setIsLoading(false)
               const response = await fetch('api/login', {
@@ -65,7 +65,7 @@ const Login = () => {
 
               const loggedInResponse :{done: boolean}= await response.json();
               if(loggedInResponse.done){
-                console.log({loggedInResponse});
+             
                 router.push('/');}   
               } else {
                 setIsLoading(false);

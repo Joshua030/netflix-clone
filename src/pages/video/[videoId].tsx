@@ -19,7 +19,7 @@ export async function getStaticProps(context: GetStaticPropsContext) {
 
   const videoIds = context?.params?.videoId ?? "4zH5iYM4wJo";
   const videoId = Array.isArray(videoIds) ? videoIds[0] : videoIds;
-  console.log({ context });
+ 
 
   // const videoId = "4zH5iYM4wJo";
 
@@ -71,11 +71,11 @@ const Video = ({ video }: Props) => {
         method: "GET",
       });
       const data = await response.json();
-console.log({data});
+
 
       if (data.length > 0) {
         const favourited = data[0].favourited;
-        console.log({favourited});
+      
         
         if (favourited === 1) {
           setToggleLike(true);
@@ -107,7 +107,7 @@ console.log({data});
     const favourited = val ? 0 : 1;
     const response = await runRatingService(favourited);
     const data = await response.json();
-    console.log({ data });
+   
   };
 
   const handleToggleLike = async () => {
@@ -117,7 +117,6 @@ console.log({data});
     const favourited = val ? 1 : 0;
     const response = await runRatingService(favourited);
     const data = await response.json();
-    console.log({ data });
   };
 
   return (
